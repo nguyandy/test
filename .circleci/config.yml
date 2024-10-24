@@ -1,0 +1,51 @@
+# Python CircleCI 2.0 configuration file
+#
+# Check https://circleci.com/docs/2.0/language-python/ for more details
+#
+version: 2
+jobs:
+  build:
+    docker:
+      - image: ${ECR_ENDPOINT}/core:circleCI
+
+    working_directory: ~/repo
+
+    steps:
+      - checkout
+
+      # Download and cache dependencies
+      - restore_cache:
+          keys:
+          - v1-dependencies-{{ checksum "requirements.txt" }}
+          # fallback to using the latest cache if no exact match is found
+          - v1-dependencies-
+
+      - run:
+          name: Install python dependencies
+          command: |
+            pip install -r dev_requirements.txt
+            pip install setuptools -U
+            pip install Cython
+            pip install -r requirements.txt
+            pip install matplotlib==2.2.2
+            pip install MetPy==0.7.0
+            pip install pyproj
+
+      - save_cache:
+          paths:
+            - ./venv
+          key: v1-dependencies-{{ checksum "requirements.txt" }}
+
+      # run tests!
+      # other common Python testing frameworks include pytest and nose
+      # https://pytest.org
+      # https://nose.readthedocs.io
+      - run:
+          name: Run tests
+          command: |
+            python36 -m pytest tests/test_plots.py
+
+
+      - store_artifacts:
+          path: test-reports
+          destination: test-reports

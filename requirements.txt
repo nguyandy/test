@@ -1,0 +1,11 @@
+numpy
+six
+cf_units
+netCDF4
+cftime==1.4.1
+Shapely
+cmocean
+# Leave comments to indicate that these libraries are needed for certain modules
+# matplotlib==2.1.1
+# MetPy==0.7.0
+# pyproj==1.9.5.1
